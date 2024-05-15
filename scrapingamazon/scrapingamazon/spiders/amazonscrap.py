@@ -1,32 +1,28 @@
+from typing import Any
 import scrapy
-from scrapingamazon.items import tabletItem
+from scrapingamazon.items import Item#, asins
 
+
+## ASIN => https://www.amazon.com.tr/dp/ASIN_CODE
 class AmazonscrapSpider(scrapy.Spider):
     name = "amazonscrap"
-    allowed_domains = ["amazon.com.tr"]
-    start_urls = ["https://www.amazon.com.tr/s?k=iPads"]
-
-    def parse(self, response):
-        product_urls = response.css("a.a-link-normal::attr('href')")
+    
+    def start_requests(self):
         
-        for product_url in product_urls:
-            url = product_url.get()
-            product_page = "https://www.amazon.com.tr" + url
-            yield response.follow(url=product_page, callback=self.parse_product_page)
+        yield scrapy.Request(url="https://www.amazon.com.tr/samsung-s-pen/s?k=samsung+s+pen", callback=self.parse_asin)
+        
+    def parse_asin(self, response):
         
         
-        next_url = response.css("li.a-last a::attr('href')").get()
-        if next_url is not None:
-            next_page = "https://www.amazon.com.tr" + next_url
-            response.follow(url=next_page, callback=self.parse)
-
-    def parse_product_page(self, response):
-        tabletproduct = tabletItem()
+        products = response.xpath('//div[@data-asin != ""]/@data-asin')
         
-        title = response.css("span#productTitle::text").get()
-        price = response.css("span.a-price-whole::text").get()
-        tabletproduct["title"] = title
-        tabletproduct["price"] = price
+        l = len(products)
         
-        yield tabletproduct
+        for i in range(l):
+            asin = products[i].get()
+            
+            yield {
+                'asin': asin
+            }
         
+ 

@@ -4,14 +4,11 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+import pandas as pd
 
+#asins = pd.read_csv('asins.csv')
 
-class ScrapingamazonItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
-
-
-class tabletItem(scrapy.Item):
-    title = scrapy.Field()
+class Item(scrapy.Item):
+    asin = scrapy.Field()
+    date = scrapy.Field()
     price = scrapy.Field()
