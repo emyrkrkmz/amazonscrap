@@ -6,7 +6,9 @@
 import scrapy
 import pandas as pd
 
-#asins = pd.read_csv('asins.csv')
+df = pd.read_csv('asin.csv')
+
+asins = df["asin"].values
 
 class Item(scrapy.Item):
     asin = scrapy.Field()
